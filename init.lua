@@ -1,4 +1,5 @@
 --[[
+--
 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
@@ -940,6 +941,14 @@ require('lazy').setup({
       -- set use_icons to true if you have a Nerd Font
       statusline.setup {
         use_icons = vim.g.have_nerd_font,
+        content = {
+          inactive = function()
+            local pathname= MiniStatusline.section_filename({trunc_width= 100})
+            return MiniStatusline.combine_groups({
+              { hl = 'MiniStatuslineFilename', strings = { pathname } },
+            })
+          end,
+        }
       }
 
       -- You can configure sections in the statusline by overriding their
@@ -1108,6 +1117,47 @@ require('lazy').setup({
     },
     config = function ()
       require('Comment').setup()
+    end
+  },
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-neotest/neotest-python",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function ()
+      require("neotest").setup({
+        adapters = {
+          require("neotest-python")({
+              -- Extra arguments for nvim-dap configuration
+              -- See https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for values
+              dap = { justMyCode = false },
+              -- Command line arguments for runner
+              -- Can also be a function to return dynamic values
+              args = {"--log-level", "DEBUG"},
+              -- Runner to use. Will use pytest if available by default.
+              -- Can be a function to return dynamic value.
+              runner = "pytest",
+              -- Custom python path for the runner.
+              -- Can be a string or a list of strings.
+              -- Can also be a function to return dynamic value.
+              -- If not provided, the path will be inferred by checking for 
+              -- virtual envs in the local directory and for Pipenev/Poetry configs
+              python = "venv/bin/python",
+              -- Returns if a given file path is a test file.
+              -- NB: This function is called a lot so don't perform any heavy tasks within it.
+              -- is_test_file = function(file_path)
+              --   ...
+              -- end,
+              -- !!EXPERIMENTAL!! Enable shelling out to `pytest` to discover test
+              -- instances for files containing a parametrize mark (default: false)
+              pytest_discover_instances = false,
+          })
+        }
+      })
     end
   }
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
