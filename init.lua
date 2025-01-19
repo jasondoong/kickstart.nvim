@@ -111,6 +111,9 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+
+require 'custom.keymapping'
+
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -171,7 +174,9 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- neo-tree keymaps
-vim.keymap.set('n', '<leader>e', '<cmd>Neotree<CR>', { desc = 'Open Neotree' })
+vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle % left<cr>', { desc = 'toggle Neotree' })
+vim.keymap.set('n', '<leader>b', '<cmd>Neotree toggle show buffers right<cr>', { desc = 'Neotree show buffers' })
+vim.keymap.set('n', '<leader>gs', '<cmd>Neotree float git_status<cr>', { desc = 'Neotree show git status' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -1159,12 +1164,14 @@ require('lazy').setup({
         }
       })
     end
-  }
+  },
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  {
+    import = 'custom.plugins',
+  },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
