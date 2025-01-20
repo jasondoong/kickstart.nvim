@@ -23,6 +23,8 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+
+    "mfussenegger/nvim-dap-python",
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -55,7 +57,7 @@ return {
       desc = 'Debug: Step Out',
     },
     {
-      '<leader>b',
+      '<leader>dbp',
       function()
         require('dap').toggle_breakpoint()
       end,
@@ -70,7 +72,7 @@ return {
     },
     -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     {
-      '<F7>',
+      '<leader>dui',
       function()
         require('dapui').toggle()
       end,
@@ -144,5 +146,8 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    require("dap-python").setup "~/.virtualenvs/debugpy/bin/python"
+    require("dap-python").test_runner = "pytest"
   end,
 }

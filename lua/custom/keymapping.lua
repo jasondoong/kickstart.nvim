@@ -9,3 +9,5 @@ map('n', '<leader>ts', ':lua require("neotest").summary.toggle()<CR>', { desc = 
 map('n', '<leader>tf', ':lua require("neotest").run.run(vim.fn.expand("%"))<CR>', { desc = 'open test summary window' })
 map('n', '<leader>td', ':lua require("neotest").run.run({stratege = "dap"})<CR>', { desc = 'run dap on nearest test' })
 
+-- debug shortcuts
+map("n", "<leader>dr", ':lua require("dap-python").test_method()<CR>', { desc = 'Debug: run nearest.' })
