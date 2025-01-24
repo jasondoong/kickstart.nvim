@@ -156,17 +156,19 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 5
+vim.opt.scrolloff = 2
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
 -- use ; to enter command mode
 vim.keymap.set("n", ";", ":", { desc = "CMD enter command mode" })
+vim.keymap.set("i", "l;", "<Esc>", { desc = "use l; to escape" })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', 'jk', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -1133,6 +1135,18 @@ require('lazy').setup({
     },
     config = function ()
       require("neotest").setup({
+        output = {
+          enabled = true,
+          open_on_run = true,
+        },
+        quickfix = {
+          enabled = true,
+          open = false,
+        },
+        output_panel = {
+          enabled = true,
+          open = "botright split | resize 15"
+        },
         adapters = {
           require("neotest-python")({
               -- Extra arguments for nvim-dap configuration
@@ -1140,7 +1154,7 @@ require('lazy').setup({
               dap = { justMyCode = false },
               -- Command line arguments for runner
               -- Can also be a function to return dynamic values
-              args = {"--log-level", "DEBUG"},
+              args = {"--log-level", "DEBUG", "-vv", "--disable-warnings"},
               -- Runner to use. Will use pytest if available by default.
               -- Can be a function to return dynamic value.
               runner = "pytest",
