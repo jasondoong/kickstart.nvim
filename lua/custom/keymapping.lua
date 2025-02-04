@@ -21,5 +21,5 @@ map("n", "<leader>v", ':vertical terminal<CR>', { desc = 'split vertical termina
 
 
 -- quickfix
-map("n", "<leader>co", ':copen<CR>', { desc = 'split vertical terminal' })
-map("n", "<leader>cc", ':cclose<CR>', { desc = 'split vertical terminal' })
+map("n", "<leader>co", ':copen<CR>', { desc = 'open quickfix window' })
+map("n", "<leader>cc", ':cclose<CR>', { desc = 'close quickfix window' })
