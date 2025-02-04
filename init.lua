@@ -163,12 +163,11 @@ vim.opt.scrolloff = 2
 
 -- use ; to enter command mode
 vim.keymap.set("n", ";", ":", { desc = "CMD enter command mode" })
-vim.keymap.set("i", "l;", "<Esc>", { desc = "use l; to escape" })
+vim.keymap.set("i", "jk", "<Esc>", { desc = "jk to escape" })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('n', 'jk', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -1163,7 +1162,7 @@ require('lazy').setup({
               -- Can also be a function to return dynamic value.
               -- If not provided, the path will be inferred by checking for 
               -- virtual envs in the local directory and for Pipenev/Poetry configs
-              python = "venv/bin/python",
+              python = "/home/jason/.cache/pypoetry/virtualenvs/course-nc6xrDgT-py3.11/bin/python",
               -- Returns if a given file path is a test file.
               -- NB: This function is called a lot so don't perform any heavy tasks within it.
               -- is_test_file = function(file_path)
