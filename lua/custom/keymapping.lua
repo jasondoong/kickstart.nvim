@@ -1,7 +1,5 @@
 local map = vim.keymap.set
 
-map('n', '<leader>cs', require('custom.show_class_methods').show_classes_and_methods, { desc = 'Open filtered doucment symbols in Quickfix list' })
-
 -- test shortcuts
 map('n', '<leader>ta', ':Neotest attach<CR>', { desc = 'Neotest attach' })
 map('n', '<leader>tl', ':lua require("neotest").run.run_last()<CR>', { desc = 'run the last test' })
