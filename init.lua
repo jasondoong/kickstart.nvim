@@ -176,6 +176,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle % left<cr>', { desc = 'toggle Neotree' })
 vim.keymap.set('n', '<leader>b', '<cmd>Neotree toggle show buffers right<cr>', { desc = 'Neotree show buffers' })
 vim.keymap.set('n', '<leader>gs', '<cmd>Neotree float git_status<cr>', { desc = 'Neotree show git status' })
+vim.keymap.set('n', '<leader>ds', '<cmd>Neotree toggle document_symbols<cr>', { desc = 'Neotree show document_symbols' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -551,7 +552,7 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          -- map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -1027,6 +1028,12 @@ require('lazy').setup({
     },
     config = function ()
       require('neo-tree').setup {
+          sources = {
+            "filesystem",
+            "buffers",
+            "git_status",
+            "document_symbols",
+        },
         close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
         popup_border_style = "rounded",
         enable_git_status = true,
@@ -1139,7 +1146,7 @@ require('lazy').setup({
           open_on_run = true,
         },
         quickfix = {
-          enabled = true,
+          enabled = false,
           open = false,
         },
         output_panel = {
