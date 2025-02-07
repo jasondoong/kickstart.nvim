@@ -173,8 +173,8 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- neo-tree keymaps
-vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle % left<cr>', { desc = 'toggle Neotree' })
-vim.keymap.set('n', '<leader>b', '<cmd>Neotree toggle show buffers right<cr>', { desc = 'Neotree show buffers' })
+vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle show % left<cr>', { desc = 'toggle Neotree' })
+vim.keymap.set('n', '<leader>b', '<cmd>Neotree toggle show buffers<cr>', { desc = 'Neotree show buffers' })
 vim.keymap.set('n', '<leader>gs', '<cmd>Neotree float git_status<cr>', { desc = 'Neotree show git status' })
 vim.keymap.set('n', '<leader>ds', '<cmd>Neotree toggle document_symbols<cr>', { desc = 'Neotree show document_symbols' })
 
@@ -470,6 +470,7 @@ require('lazy').setup({
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { "nvim-dap-ui"},
       },
     },
   },
