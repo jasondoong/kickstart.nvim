@@ -1141,10 +1141,20 @@ require('lazy').setup({
       "nvim-treesitter/nvim-treesitter",
     },
     config = function ()
-      require("neotest").setup({
+      local neotest = require("neotest")
+      neotest.setup({
+        consumers = {
+          my_listener = function(client)
+            client.listeners = client.listeners or {}
+            -- Open output panel when a test run starts
+            client.listeners.run = function(_, _)
+              neotest.output_panel.open()
+            end
+          end
+        },
         output = {
           enabled = true,
-          open_on_run = true,
+          open_on_run = false,
         },
         quickfix = {
           enabled = false,
