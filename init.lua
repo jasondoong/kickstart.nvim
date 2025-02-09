@@ -1035,7 +1035,7 @@ require('lazy').setup({
             "git_status",
             "document_symbols",
         },
-        close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
+        close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
         popup_border_style = "rounded",
         enable_git_status = true,
         enable_diagnostics = true,
@@ -1112,12 +1112,22 @@ require('lazy').setup({
             -- },
           }
         },
+        filesystem = {
+          follow_current_file = {
+            enabled = true, -- This will find and focus the file in the active buffer every time
+            --              -- the current file is changed while the tree is open.
+            leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
+          },
+        },
         buffers = {
           follow_current_file = {
             enabled = true, -- This will find and focus the file in the active buffer every time
             --              -- the current file is changed while the tree is open.
             leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
           },
+        },
+        document_symbols = {
+          follow_cursor = true,
         },
       }
     end,
