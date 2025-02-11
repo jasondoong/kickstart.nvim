@@ -3,7 +3,7 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-  { "sitiom/nvim-numbertoggle" },
-  { "github/copilot.vim" },
+  { 'sitiom/nvim-numbertoggle' },
+  { 'github/copilot.vim' },
+  { 'jessekelighine/vindent.vim' },
 }
-

@@ -11,14 +11,12 @@ map('n', '<leader>tf', ':lua require("neotest").run.run(vim.fn.expand("%"))<CR>'
 map('n', '<leader>td', ':lua require("neotest").run.run({stratege = "dap"})<CR>', { desc = 'run dap on nearest test' })
 
 -- debug shortcuts
-map("n", "<leader>dr", ':lua require("dap-python").test_method()<CR>', { desc = 'Debug: run nearest.' })
-
+map('n', '<leader>dr', ':lua require("dap-python").test_method()<CR>', { desc = 'Debug: run nearest.' })
 
 -- terminal
-map("n", "<leader>h", ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
-map("n", "<leader>v", ':vertical terminal<CR>', { desc = 'split vertical terminal' })
-
+map('n', '<leader>h', ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
+map('n', '<leader>v', ':vertical terminal<CR>', { desc = 'split vertical terminal' })
 
 -- quickfix
-map("n", "<leader>co", ':copen<CR>', { desc = 'open quickfix window' })
-
+map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
+map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
