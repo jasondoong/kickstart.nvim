@@ -163,7 +163,9 @@ vim.opt.scrolloff = 2
 
 -- use ; to enter command mode
 -- vim.keymap.set("n", ";", ":", { desc = "CMD enter command mode" })
-vim.keymap.set("i", "jk", "<Esc>", { desc = "jk to escape" })
+
+-- don't need this since I have swapped caps lock and escape
+-- vim.keymap.set("i", "jk", "<Esc>", { desc = "jk to escape" })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
