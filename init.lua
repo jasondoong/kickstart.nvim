@@ -1193,6 +1193,7 @@ require('lazy').setup({
             client.listeners = client.listeners or {}
             -- Open output panel when a test run starts
             client.listeners.run = function(_, _)
+              neotest.output_panel.clear()
               neotest.output_panel.open()
             end
           end
