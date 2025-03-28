@@ -3,7 +3,13 @@ local map = vim.keymap.set
 -- test shortcuts
 map('n', '<leader>ta', ':Neotest attach<CR>', { desc = 'Neotest attach' })
 map('n', '<leader>tl', ':lua require("neotest").run.run_last()<CR>', { desc = 'run the last test' })
-map('n', '<leader>tt', ':lua require("neotest").run.run()<CR>', { desc = 'run the nearest test' })
+-- map('n', '<leader>tt', ':lua require("neotest").run.run()<CR>', { desc = 'run the nearest test' })
+map('n', '<leader>tt', function()
+  require("neotest").run.run()
+  vim.defer_fn(function()
+    require("neotest").run.attach()
+  end, 500) -- Delay of 500ms to wait for the test to start
+end, { desc = 'Run the nearest test and attach' })
 map('n', '<leader>to', ':lua require("neotest").output_panel.toggle()<CR>', { desc = 'open test output panel' })
 map('n', '<leader>ts', ':lua require("neotest").summary.toggle()<CR>', { desc = 'open test summary window' })
 map('n', '<leader>tf', ':lua require("neotest").run.run(vim.fn.expand("%"))<CR>', { desc = 'run tests in the file' })
