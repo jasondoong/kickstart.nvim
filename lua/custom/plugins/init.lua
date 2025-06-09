@@ -14,5 +14,9 @@ return {
         height = math.floor(vim.o.lines * 0.9),
       }
     },
-  }
+  },
+  {
+      "knubie/vim-kitty-navigator",
+      build = "cp ./*.py ~/.config/kitty/",
+  },
 }
