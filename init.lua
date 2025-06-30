@@ -4,6 +4,10 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldlevel = 99
 -- 摺疊欄位，顯示摺疊符號
 vim.opt.foldcolumn = "1"
+-- 開檔時不自動啟用折疊
+vim.opt.foldenable = false
+-- 摺疊時保留高亮
+vim.opt.foldtext = ""
 
 -- Use Tree-sitter folding for Python files, focusing on class and function definitions
 vim.api.nvim_create_autocmd('FileType', {
