@@ -117,14 +117,14 @@ map('n', '<leader>tf', ':lua require("neotest").run.run(vim.fn.expand("%"))<CR>'
 map('n', '<leader>z', ':ToggleTerm name=default<CR>', { desc = 'toggle default terminal' })
 map('t', 'zz', [[<C-\><C-n>]], { desc = 'to normal mode' })
 
-local Terminal  = require('toggleterm.terminal').Terminal
-local lazygit = Terminal:new({ cmd = "lazygit", hidden = true })
+local Terminal = require('toggleterm.terminal').Terminal
+local lazygit = Terminal:new({ cmd = 'lazygit', hidden = true })
 
-function _lazygit_toggle()
+local function lazygit_toggle()
   lazygit:toggle()
 end
 
-map("n", "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", { desc = 'toggle lazygit' })
+map('n', '<leader>lg', lazygit_toggle, { desc = 'toggle lazygit' })
 
 -- quickfix
 map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
