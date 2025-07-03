@@ -249,7 +249,6 @@ require('lazy').setup({
       library = {
         -- Load luvit types when the `vim.uv` word is found
         { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
-        { "nvim-dap-ui"},
       },
     },
   },
@@ -786,7 +785,6 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
@@ -964,9 +962,6 @@ require('lazy').setup({
         },
         adapters = {
           require("neotest-python")({
-              -- Extra arguments for nvim-dap configuration
-              -- See https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for values
-              dap = { justMyCode = false },
               -- Command line arguments for runner
               -- Can also be a function to return dynamic values
               args = {"--log-level", "DEBUG", "-vv", "--disable-warnings"},

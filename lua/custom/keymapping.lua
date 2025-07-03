@@ -110,9 +110,6 @@ end, { desc = 'Run nearest pytest via Kitty' })
 map('n', '<leader>to', ':lua require("neotest").output_panel.toggle()<CR>', { desc = 'open test output panel' })
 map('n', '<leader>ts', ':lua require("neotest").summary.toggle()<CR>', { desc = 'open test summary window' })
 map('n', '<leader>tf', ':lua require("neotest").run.run(vim.fn.expand("%"))<CR>', { desc = 'run tests in the file' })
-map('n', '<leader>td', ':lua require("neotest").run.run({stratege = "dap"})<CR>', { desc = 'run dap on nearest test' })
--- debug shortcuts
-map('n', '<leader>dr', ':lua require("dap-python").test_method()<CR>', { desc = 'Debug: run nearest.' })
 
 -- terminal
 -- map('n', '<leader>h', ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
