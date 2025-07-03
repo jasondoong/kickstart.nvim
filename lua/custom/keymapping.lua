@@ -23,53 +23,34 @@ end, { desc = '[T]est [L]ast in runner pane' })
 -------------------------------------------------------------------------------
 -- <leader>tt ── 依游標位置，組合 pytest node-id 並送到 Kitty 指定 pane
 -------------------------------------------------------------------------------
-vim.keymap.set('n', '<leader>tt', function()
+local function pytest_ts()
   ---------------------------------------------------------------------------
-  -- ❶ 向上掃描：最近 test_ 函式；若無則檢查 Test class
+  -- ❶ 取得游標所在的函式/類別名稱
   ---------------------------------------------------------------------------
-  local buf        = 0                                  -- 目前 buffer
-  local path       = vim.fn.expand('%:p')                -- 絕對檔名
-  local cur_ln     = vim.fn.line('.') - 1                -- 0-based
-  local getline    = vim.api.nvim_buf_get_lines
+  local bufnr = 0
+  local path = vim.fn.expand('%:p')
 
-  local func_name, func_indent
-  local class_name, class_indent
+  -- 解析當前 buffer 的 python tree
+  local parser = vim.treesitter.get_parser(bufnr, 'python')
+  parser:parse()
 
-  for ln = cur_ln, 0, -1 do
-    local text   = (getline(buf, ln, ln + 1, false)[1] or '')
-    local indent = #text:match('^%s*')
+  local ts_utils = require('nvim-treesitter.ts_utils')
+  local node = ts_utils.get_node_at_cursor()
 
-    -------------------------------------------------------------------------
-    -- 找最近的 def test_*  （允許前面有 async / 型別註解）
-    -------------------------------------------------------------------------
-    if not func_name then
-      local fn = text:match('^%s*[%w%s]*def%s+(test[%w_]*)')
-      if fn then
-        func_name, func_indent = fn, indent
-      end
+  local func_name
+  local class_name
+
+  while node do
+    local type = node:type()
+    if not func_name and type == 'function_definition' then
+      local name = node:field('name')[1]
+      func_name = vim.treesitter.get_node_text(name, bufnr)
+    elseif type == 'class_definition' then
+      local name = node:field('name')[1]
+      class_name = vim.treesitter.get_node_text(name, bufnr)
+      break
     end
-
-    -------------------------------------------------------------------------
-    -- ◎ 已找到函式 → 往上找包住它的 Test class
-    -------------------------------------------------------------------------
-    if func_name and not class_name and indent < func_indent then
-      local cls = text:match('^%s*class%s+([%w_]+)')
-      if cls and cls:match('^Test') then
-        class_name, class_indent = cls, indent
-        break                                     -- 找到即可停止
-      end
-    end
-
-    -------------------------------------------------------------------------
-    -- ◎ 尚未找到函式 → 若此行就是 Test class，代表游標在 class 層
-    -------------------------------------------------------------------------
-    if not func_name and not class_name then
-      local cls_top = text:match('^%s*class%s+([%w_]+)')
-      if cls_top and cls_top:match('^Test') then
-        class_name, class_indent = cls_top, indent
-        break                                     -- 直接執行整個 class
-      end
-    end
+    node = node:parent()
   end
 
   ---------------------------------------------------------------------------
@@ -105,7 +86,9 @@ vim.keymap.set('n', '<leader>tt', function()
     cmd:gsub('"', '\\"')   -- escape 雙引號
   )
   vim.fn.system(kitty_cmd)
-end, { desc = 'Run nearest pytest via Kitty' })
+end
+
+vim.keymap.set('n', '<leader>tt', pytest_ts, { desc = 'Run nearest pytest via Kitty' })
 
 map('n', '<leader>to', ':lua require("neotest").output_panel.toggle()<CR>', { desc = 'open test output panel' })
 map('n', '<leader>ts', ':lua require("neotest").summary.toggle()<CR>', { desc = 'open test summary window' })
