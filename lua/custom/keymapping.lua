@@ -128,4 +128,4 @@ map("n", "<leader>lg", "<cmd>lua _lazygit_toggle()<CR>", { desc = 'toggle lazygi
 
 -- quickfix
 map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
-map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quico/fix window' })
+map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
