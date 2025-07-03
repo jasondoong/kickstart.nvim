@@ -5,7 +5,6 @@
 return {
   { 'sitiom/nvim-numbertoggle' },
   { 'github/copilot.vim' },
-  { 'jessekelighine/vindent.vim' },
   { 'akinsho/toggleterm.nvim', version = "*",
     opts = {
       direction = 'float',
