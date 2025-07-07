@@ -1,25 +1,38 @@
 local map = vim.keymap.set
 
+-- cache the terminal buffer used for running pytest and last command
+local pytest_term_bufnr
+local last_pytest_cmd
+
 -- Helper that finds (or creates) a terminal and sends a command to it
 local function send_to_terminal(cmd)
-  local wins = vim.api.nvim_tabpage_list_wins(0)
+  last_pytest_cmd = cmd
+
+  local current = vim.api.nvim_get_current_win()
   local term_win
-  for _, w in ipairs(wins) do
-    local buf = vim.api.nvim_win_get_buf(w)
-    if vim.bo[buf].buftype == 'terminal' then
-      term_win = w
+
+  if pytest_term_bufnr and vim.api.nvim_buf_is_valid(pytest_term_bufnr) then
+    -- try to find an existing window displaying the terminal
+    for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      if vim.api.nvim_win_get_buf(w) == pytest_term_bufnr then
+        term_win = w
+        break
+      end
     end
   end
 
-  local current = vim.api.nvim_get_current_win()
-
   if not term_win then
     vim.cmd('botright split')
-    vim.cmd('terminal')
     term_win = vim.api.nvim_get_current_win()
+    if pytest_term_bufnr and vim.api.nvim_buf_is_valid(pytest_term_bufnr) then
+      vim.api.nvim_win_set_buf(term_win, pytest_term_bufnr)
+    else
+      vim.cmd('terminal')
+      pytest_term_bufnr = vim.api.nvim_win_get_buf(term_win)
+    end
   end
 
-  local buf = vim.api.nvim_win_get_buf(term_win)
+  local buf = pytest_term_bufnr
   local ok, job_id = pcall(vim.api.nvim_buf_get_var, buf, 'terminal_job_id')
   if ok then
     vim.api.nvim_chan_send(job_id, cmd .. '\n')
@@ -97,6 +110,29 @@ local function run_pytest_file()
 end
 
 map('n', '<leader>tf', run_pytest_file, { desc = 'run tests in the file' })
+
+local function run_last_pytest()
+  if last_pytest_cmd then
+    send_to_terminal(last_pytest_cmd)
+  else
+    vim.notify('No pytest command has been run yet', vim.log.levels.WARN)
+  end
+end
+
+local function hide_pytest_terminal()
+  if not pytest_term_bufnr or not vim.api.nvim_buf_is_valid(pytest_term_bufnr) then
+    return
+  end
+  for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.api.nvim_win_get_buf(w) == pytest_term_bufnr then
+      vim.api.nvim_win_hide(w)
+      break
+    end
+  end
+end
+
+map('n', '<leader>tl', run_last_pytest, { desc = 'rerun last pytest command' })
+map('n', '<leader>th', hide_pytest_terminal, { desc = 'hide pytest terminal' })
 
 -- terminal
 -- map('n', '<leader>h', ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
