@@ -2,24 +2,6 @@ local map = vim.keymap.set
 
 local kitty_listen_on = os.getenv('KITTY_LISTEN_ON')
 
--- test shortcuts
-map('n', '<leader>ta', ':Neotest attach<CR>', { desc = 'Neotest attach' })
--- map('n', '<leader>tl', ':lua require("neotest").run.run_last()<CR>', { desc = 'run the last test' })
--- ~/.config/nvim/init.lua or other keymap file
-vim.keymap.set('n', '<leader>tl', function()
-  if kitty_listen_on then
-    local cmd = string.format(
-      'silent !kitty @ --to %s send-text --match var:id=main_bottom "pytest --lf\\n"',
-      kitty_listen_on
-    )
-    -- print(cmd)
-    vim.cmd(cmd)
-  else
-    print("Kitty is not running or KITTY_LISTEN_ON is not set.")
-  end
-end, { desc = '[T]est [L]ast in runner pane' })
-
--- map('n', '<leader>tt', ':lua require("neotest").run.run()<CR>', { desc = 'run the nearest test' })
 -------------------------------------------------------------------------------
 -- <leader>tt ── 依游標位置，組合 pytest node-id 並送到 Kitty 指定 pane
 -------------------------------------------------------------------------------
@@ -90,8 +72,6 @@ end
 
 vim.keymap.set('n', '<leader>tt', pytest_ts, { desc = 'Run nearest pytest via Kitty' })
 
-map('n', '<leader>to', ':lua require("neotest").output_panel.toggle()<CR>', { desc = 'open test output panel' })
-map('n', '<leader>ts', ':lua require("neotest").summary.toggle()<CR>', { desc = 'open test summary window' })
 local function run_pytest_file()
   local file = vim.fn.expand('%:p')
 
@@ -109,7 +89,7 @@ local function run_pytest_file()
 
   -- create a new terminal if none exists
   if not term_win then
-    vim.cmd('botright vsplit')
+    vim.cmd('botright split')
     vim.cmd('terminal')
     term_win = vim.api.nvim_get_current_win()
   end
