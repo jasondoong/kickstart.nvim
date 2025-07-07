@@ -112,3 +112,10 @@ map('n', '<leader>lg', lazygit_toggle, { desc = 'toggle lazygit' })
 -- quickfix
 map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
 map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
+
+-- copy the current buffer's file path to the clipboard
+map('n', '<leader>yf', function()
+  local path = vim.fn.expand('%:p')
+  vim.fn.setreg('+', path)
+  vim.notify('Copied path: ' .. path)
+end, { desc = '[Y]ank current [F]ile path' })
