@@ -1,35 +1,69 @@
 local map = vim.keymap.set
 
+-------------------------------------------------------------------------------
+-- Pytest integration
+-------------------------------------------------------------------------------
+-- Terminal buffer used for running pytest
+local pytest_buf
+-- The window that currently displays `pytest_buf`
+local pytest_win
+-- Track the last pytest command so it can be re-run
+local last_pytest_cmd = 'pytest'
+
 -- Helper that finds (or creates) a terminal and sends a command to it
+-- Send a command to the pytest terminal.  If the terminal does not exist,
+-- it will be created.  The last command is stored so that it can be
+-- executed again with <leader>tl.
 local function send_to_terminal(cmd)
-  local wins = vim.api.nvim_tabpage_list_wins(0)
-  local term_win
-  for _, w in ipairs(wins) do
-    local buf = vim.api.nvim_win_get_buf(w)
-    if vim.bo[buf].buftype == 'terminal' then
-      term_win = w
-    end
+  last_pytest_cmd = cmd
+
+  if not pytest_buf or not vim.api.nvim_buf_is_valid(pytest_buf) then
+    -- Create a new terminal buffer and window
+    vim.cmd('botright split')
+    vim.cmd('terminal')
+    pytest_win = vim.api.nvim_get_current_win()
+    pytest_buf = vim.api.nvim_get_current_buf()
+  elseif not pytest_win or not vim.api.nvim_win_is_valid(pytest_win) then
+    -- The buffer exists but the window was closed: re-open the window
+    vim.cmd('botright split')
+    pytest_win = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(pytest_win, pytest_buf)
   end
 
   local current = vim.api.nvim_get_current_win()
 
-  if not term_win then
-    vim.cmd('botright split')
-    vim.cmd('terminal')
-    term_win = vim.api.nvim_get_current_win()
-  end
-
-  local buf = vim.api.nvim_win_get_buf(term_win)
-  local ok, job_id = pcall(vim.api.nvim_buf_get_var, buf, 'terminal_job_id')
+  -- Try sending directly to the running job if available
+  local ok, job_id = pcall(vim.api.nvim_buf_get_var, pytest_buf, 'terminal_job_id')
   if ok then
     vim.api.nvim_chan_send(job_id, cmd .. '\n')
   else
-    vim.api.nvim_win_call(term_win, function()
+    vim.api.nvim_win_call(pytest_win, function()
       vim.fn.feedkeys(cmd .. '\n')
     end)
   end
 
   vim.api.nvim_set_current_win(current)
+end
+
+-- Toggle the pytest terminal window without closing the buffer.  If the
+-- window is already visible it will be hidden; if hidden it will be shown.
+-- When no terminal exists yet it will be spawned using the last command.
+local function toggle_pytest_terminal()
+  if pytest_win and vim.api.nvim_win_is_valid(pytest_win) then
+    vim.api.nvim_win_close(pytest_win, true)
+    pytest_win = nil
+  elseif pytest_buf and vim.api.nvim_buf_is_valid(pytest_buf) then
+    vim.cmd('botright split')
+    pytest_win = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(pytest_win, pytest_buf)
+  else
+    send_to_terminal(last_pytest_cmd)
+  end
+end
+
+-- Run the most recently executed pytest command
+local function run_last_pytest()
+  send_to_terminal(last_pytest_cmd)
 end
 
 -------------------------------------------------------------------------------
@@ -92,11 +126,15 @@ end
 vim.keymap.set('n', '<leader>tt', pytest_ts, { desc = 'Run nearest pytest in terminal' })
 
 local function run_pytest_file()
+  -- Run pytest on the current file
   local file = vim.fn.expand('%:p')
   send_to_terminal('pytest ' .. vim.fn.fnameescape(file))
 end
 
+-- Key mappings for pytest workflow
 map('n', '<leader>tf', run_pytest_file, { desc = 'run tests in the file' })
+map('n', '<leader>tl', run_last_pytest, { desc = 'run latest pytest again' })
+map('n', '<leader>to', toggle_pytest_terminal, { desc = 'toggle pytest output window' })
 
 -- terminal
 -- map('n', '<leader>h', ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
