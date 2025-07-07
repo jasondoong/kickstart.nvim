@@ -92,7 +92,42 @@ vim.keymap.set('n', '<leader>tt', pytest_ts, { desc = 'Run nearest pytest via Ki
 
 map('n', '<leader>to', ':lua require("neotest").output_panel.toggle()<CR>', { desc = 'open test output panel' })
 map('n', '<leader>ts', ':lua require("neotest").summary.toggle()<CR>', { desc = 'open test summary window' })
-map('n', '<leader>tf', ':lua require("neotest").run.run(vim.fn.expand("%"))<CR>', { desc = 'run tests in the file' })
+local function run_pytest_file()
+  local file = vim.fn.expand('%:p')
+
+  -- find all terminal windows in the current tabpage
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  local term_win
+  for _, w in ipairs(wins) do
+    local buf = vim.api.nvim_win_get_buf(w)
+    if vim.bo[buf].buftype == 'terminal' then
+      term_win = w
+    end
+  end
+
+  local current = vim.api.nvim_get_current_win()
+
+  -- create a new terminal if none exists
+  if not term_win then
+    vim.cmd('botright vsplit')
+    vim.cmd('terminal')
+    term_win = vim.api.nvim_get_current_win()
+  end
+
+  local buf = vim.api.nvim_win_get_buf(term_win)
+  local ok, job_id = pcall(vim.api.nvim_buf_get_var, buf, 'terminal_job_id')
+  if ok then
+    vim.api.nvim_chan_send(job_id, 'pytest ' .. vim.fn.fnameescape(file) .. '\n')
+  else
+    vim.api.nvim_win_call(term_win, function()
+      vim.fn.feedkeys('pytest ' .. vim.fn.fnameescape(file) .. '\n')
+    end)
+  end
+
+  vim.api.nvim_set_current_win(current)
+end
+
+map('n', '<leader>tf', run_pytest_file, { desc = 'run tests in the file' })
 
 -- terminal
 -- map('n', '<leader>h', ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
