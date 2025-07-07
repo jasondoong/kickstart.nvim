@@ -1,9 +1,39 @@
 local map = vim.keymap.set
 
-local kitty_listen_on = os.getenv('KITTY_LISTEN_ON')
+-- Helper that finds (or creates) a terminal and sends a command to it
+local function send_to_terminal(cmd)
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  local term_win
+  for _, w in ipairs(wins) do
+    local buf = vim.api.nvim_win_get_buf(w)
+    if vim.bo[buf].buftype == 'terminal' then
+      term_win = w
+    end
+  end
+
+  local current = vim.api.nvim_get_current_win()
+
+  if not term_win then
+    vim.cmd('botright split')
+    vim.cmd('terminal')
+    term_win = vim.api.nvim_get_current_win()
+  end
+
+  local buf = vim.api.nvim_win_get_buf(term_win)
+  local ok, job_id = pcall(vim.api.nvim_buf_get_var, buf, 'terminal_job_id')
+  if ok then
+    vim.api.nvim_chan_send(job_id, cmd .. '\n')
+  else
+    vim.api.nvim_win_call(term_win, function()
+      vim.fn.feedkeys(cmd .. '\n')
+    end)
+  end
+
+  vim.api.nvim_set_current_win(current)
+end
 
 -------------------------------------------------------------------------------
--- <leader>tt ── 依游標位置，組合 pytest node-id 並送到 Kitty 指定 pane
+-- <leader>tt ── 依游標位置，組合 pytest node-id 並送到終端
 -------------------------------------------------------------------------------
 local function pytest_ts()
   ---------------------------------------------------------------------------
@@ -51,60 +81,19 @@ local function pytest_ts()
     nodeid = path                                           -- fallback：整檔
   end
 
-  local cmd = ('pytest %s\n'):format(nodeid)
+  local cmd = ('pytest %s'):format(nodeid)
 
   ---------------------------------------------------------------------------
-  -- ❸ 送進 Kitty 的 main_bottom pane
+  -- ❸ 送進終端
   ---------------------------------------------------------------------------
-  local kitty_to = vim.g.kitty_listen_on or os.getenv('KITTY_LISTEN_ON')
-  if not kitty_to or kitty_to == '' then
-    vim.notify('Kitty 沒有啟動或 KITTY_LISTEN_ON 未設定', vim.log.levels.ERROR)
-    return
-  end
-
-  local kitty_cmd = string.format(
-    'kitty @ --to %s send-text --match var:id=main_bottom "%s"',
-    kitty_to,
-    cmd:gsub('"', '\\"')   -- escape 雙引號
-  )
-  vim.fn.system(kitty_cmd)
+  send_to_terminal(cmd)
 end
 
-vim.keymap.set('n', '<leader>tt', pytest_ts, { desc = 'Run nearest pytest via Kitty' })
+vim.keymap.set('n', '<leader>tt', pytest_ts, { desc = 'Run nearest pytest in terminal' })
 
 local function run_pytest_file()
   local file = vim.fn.expand('%:p')
-
-  -- find all terminal windows in the current tabpage
-  local wins = vim.api.nvim_tabpage_list_wins(0)
-  local term_win
-  for _, w in ipairs(wins) do
-    local buf = vim.api.nvim_win_get_buf(w)
-    if vim.bo[buf].buftype == 'terminal' then
-      term_win = w
-    end
-  end
-
-  local current = vim.api.nvim_get_current_win()
-
-  -- create a new terminal if none exists
-  if not term_win then
-    vim.cmd('botright split')
-    vim.cmd('terminal')
-    term_win = vim.api.nvim_get_current_win()
-  end
-
-  local buf = vim.api.nvim_win_get_buf(term_win)
-  local ok, job_id = pcall(vim.api.nvim_buf_get_var, buf, 'terminal_job_id')
-  if ok then
-    vim.api.nvim_chan_send(job_id, 'pytest ' .. vim.fn.fnameescape(file) .. '\n')
-  else
-    vim.api.nvim_win_call(term_win, function()
-      vim.fn.feedkeys('pytest ' .. vim.fn.fnameescape(file) .. '\n')
-    end)
-  end
-
-  vim.api.nvim_set_current_win(current)
+  send_to_terminal('pytest ' .. vim.fn.fnameescape(file))
 end
 
 map('n', '<leader>tf', run_pytest_file, { desc = 'run tests in the file' })
