@@ -137,7 +137,26 @@ map('n', '<leader>tl', run_last_pytest, { desc = 'run latest pytest again' })
 map('n', '<leader>to', toggle_pytest_terminal, { desc = 'toggle pytest output window' })
 
 -- terminal
--- map('n', '<leader>h', ':horizontal terminal<CR>', { desc = 'split horizontal terminal' })
+local split_term_buf
+local split_term_win
+
+local function toggle_horizontal_terminal()
+  if split_term_win and vim.api.nvim_win_is_valid(split_term_win) then
+    vim.api.nvim_win_close(split_term_win, true)
+    split_term_win = nil
+  elseif split_term_buf and vim.api.nvim_buf_is_valid(split_term_buf) then
+    vim.cmd('botright split')
+    split_term_win = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(split_term_win, split_term_buf)
+  else
+    vim.cmd('botright split')
+    vim.cmd('terminal')
+    split_term_win = vim.api.nvim_get_current_win()
+    split_term_buf = vim.api.nvim_get_current_buf()
+  end
+end
+
+map('n', '<leader>h', toggle_horizontal_terminal, { desc = 'toggle horizontal terminal' })
 -- map('n', '<leader>v', ':vertical terminal<CR>', { desc = 'split vertical terminal' })
 map('n', '<leader>z', ':ToggleTerm name=default<CR>', { desc = 'toggle default terminal' })
 map('t', 'zz', [[<C-\><C-n>]], { desc = 'to normal mode' })
