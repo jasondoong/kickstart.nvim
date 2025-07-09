@@ -158,7 +158,6 @@ end
 
 map('n', '<leader>h', toggle_horizontal_terminal, { desc = 'toggle horizontal terminal' })
 -- map('n', '<leader>v', ':vertical terminal<CR>', { desc = 'split vertical terminal' })
-map('n', '<leader>z', ':ToggleTerm name=default<CR>', { desc = 'toggle default terminal' })
 map('t', 'zz', [[<C-\><C-n>]], { desc = 'to normal mode' })
 
 local Terminal = require('toggleterm.terminal').Terminal
