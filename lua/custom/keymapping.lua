@@ -175,7 +175,10 @@ map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
 
 -- copy the current buffer's file path to the clipboard
 map('n', '<leader>yf', function()
-  local path = vim.fn.expand('%:p')
+  -- Use the path relative to the current working directory instead of the
+  -- absolute path. This keeps the copied path shorter when working inside a
+  -- project directory.
+  local path = vim.fn.fnamemodify(vim.fn.expand('%:p'), ':.')
   vim.fn.setreg('+', path)
   vim.notify('Copied path: ' .. path)
 end, { desc = '[Y]ank current [F]ile path' })
