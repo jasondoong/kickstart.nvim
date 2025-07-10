@@ -18,4 +18,9 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Start Neovim in server mode if not already started
+if vim.v.servername == '' then
+  vim.fn.serverstart('/tmp/nvim-main.sock')
+end
+
 require 'my_kickstart'
