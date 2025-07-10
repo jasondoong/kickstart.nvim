@@ -173,6 +173,25 @@ map('n', '<leader>lg', lazygit_toggle, { desc = 'toggle lazygit' })
 map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
 map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
 
+-- Open Neo-tree with filesystem and document symbols in a split
+local function neotree_files_and_symbols()
+  -- Open the filesystem view on the left and focus it
+  vim.cmd('Neotree filesystem reveal left')
+  -- Split the Neo-tree window and open document symbols below
+  vim.cmd('wincmd s')
+  vim.cmd('Neotree document_symbols reveal current')
+  -- Return focus to the previous window
+  vim.cmd('wincmd p')
+end
+
+map('n', '<leader>ns', neotree_files_and_symbols, { desc = 'neo-tree: files + symbols' })
+
+-- Open the split Neo-tree sidebar automatically when starting Neovim
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = neotree_files_and_symbols,
+  once = true,
+})
+
 -- copy the current buffer's file path to the clipboard
 map('n', '<leader>yf', function()
   -- Use the path relative to the current working directory instead of the
