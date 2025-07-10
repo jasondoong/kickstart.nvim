@@ -182,3 +182,7 @@ map('n', '<leader>yf', function()
   vim.fn.setreg('+', path)
   vim.notify('Copied path: ' .. path)
 end, { desc = '[Y]ank current [F]ile path' })
+
+-- open Neo-tree and Aerial layout
+local sidebar = require('custom.sidebar')
+map('n', '<leader>e', sidebar.open, { desc = 'explorer && symbols' })

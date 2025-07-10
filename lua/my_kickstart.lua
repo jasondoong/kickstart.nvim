@@ -223,5 +223,12 @@ require 'my_kickstart_lazy'
 
 require 'custom.keymapping'
 
+-- Open Neo-tree and Aerial on startup
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    require('custom.sidebar').open()
+  end,
+})
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
