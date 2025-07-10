@@ -179,7 +179,7 @@ local function neotree_files_and_symbols()
 
   local function open_symbols()
     vim.cmd('wincmd s')
-    vim.cmd('Neotree document_symbols reveal current')
+    vim.cmd('Neotree document_symbols reveal bottom')
     vim.cmd('wincmd p')
   end
 
