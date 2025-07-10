@@ -177,9 +177,8 @@ map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
 local function neotree_files_and_symbols()
   -- Open the filesystem view on the left and focus it
   vim.cmd('Neotree filesystem reveal left')
-  -- Split the Neo-tree window and open document symbols below
-  vim.cmd('wincmd s')
-  vim.cmd('Neotree document_symbols reveal current')
+  -- Open the document symbols below the filesystem view
+  vim.cmd('Neotree document_symbols reveal bottom')
   -- Return focus to the previous window
   vim.cmd('wincmd p')
 end
