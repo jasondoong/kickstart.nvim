@@ -24,3 +24,8 @@ if vim.v.servername == '' then
 end
 
 require 'my_kickstart'
+
+-- Launch a dedicated Neo-tree window in Kitty
+vim.keymap.set('n', '<leader>ns', function()
+  require('custom.kitty_neotree_launcher').launch()
+end, { desc = 'neo-tree: files + symbols' })

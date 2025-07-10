@@ -1,6 +1,6 @@
 local M = {}
 
--- Launch a kitty window connected to the current Neovim instance
+---Launch a kitty window showing only Neo-tree views
 function M.launch()
   local server = vim.v.servername
 
@@ -10,10 +10,11 @@ function M.launch()
     vim.fn.serverstart(server)
   end
 
+  local config = vim.fn.stdpath('config') .. '/neotree_only.lua'
+
   local cmd = {
-    'kitty', '@', 'launch', '--type=window',
-    'nvim', '--server', server, '--remote-ui',
-    '+lua require("custom.kitty_neotree_setup").setup()'
+    'kitty', '@', 'launch', '--type=window', '--title', 'Neo-tree',
+    'nvim', '--server', server, '--remote-ui', '-u', config,
   }
   vim.fn.jobstart(cmd, { detach = true })
 end
