@@ -173,14 +173,32 @@ map('n', '<leader>lg', lazygit_toggle, { desc = 'toggle lazygit' })
 map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
 map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
 
--- Open Neo-tree with filesystem and document symbols in a split
 local function neotree_files_and_symbols()
   -- Open the filesystem view on the left and focus it
   vim.cmd('Neotree filesystem reveal left')
-  -- Open the document symbols below the filesystem view
-  vim.cmd('Neotree document_symbols reveal bottom')
-  -- Return focus to the previous window
-  vim.cmd('wincmd p')
+
+  local function open_symbols()
+    vim.cmd('wincmd s')
+    vim.cmd('Neotree document_symbols reveal bottom')
+    vim.cmd('wincmd p')
+  end
+
+  local function has_lsp()
+    local clients = vim.lsp.buf_get_clients(0)
+    return clients and next(clients)
+  end
+
+  if has_lsp() then
+    open_symbols()
+  else
+    vim.defer_fn(function()
+      if has_lsp() then
+        open_symbols()
+      else
+        vim.notify('No active LSP attached. Document symbols unavailable', vim.log.levels.WARN)
+      end
+    end, 100)
+  end
 end
 
 map('n', '<leader>ns', neotree_files_and_symbols, { desc = 'neo-tree: files + symbols' })
