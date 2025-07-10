@@ -18,4 +18,11 @@ return {
       "knubie/vim-kitty-navigator",
       build = "cp ./*.py ~/.config/kitty/",
   },
+  {
+    'stevearc/aerial.nvim',
+    opts = {},
+    config = function(_, opts)
+      require('aerial').setup(opts)
+    end,
+  },
 }
