@@ -1,5 +1,5 @@
 local map = vim.keymap.set
-local kitty_neotree = require('custom.kitty_neotree')
+local kitty_neotree = require('custom.kitty_neotree_launcher')
 
 -------------------------------------------------------------------------------
 -- Pytest integration
