@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local kitty_neotree = require('custom.kitty_neotree')
 
 -------------------------------------------------------------------------------
 -- Pytest integration
@@ -173,23 +174,7 @@ map('n', '<leader>lg', lazygit_toggle, { desc = 'toggle lazygit' })
 map('n', '<leader>co', ':copen<CR>', { desc = 'open quickfix window' })
 map('n', '<leader>cc', ':cclose<CR>', { desc = 'close quickfix window' })
 
-local function neotree_files_and_symbols()
-  -- Open the filesystem view on the left and focus it
-  vim.cmd('Neotree filesystem reveal left')
-
-  local function open_symbols()
-    vim.cmd('wincmd s')
-    vim.cmd('sleep 10m')
-    vim.cmd('Neotree document_symbols reveal current')
-    vim.cmd('wincmd p')
-  end
-
-  vim.defer_fn(function()
-    open_symbols()
-  end, 100)
-end
-
-map('n', '<leader>ns', neotree_files_and_symbols, { desc = 'neo-tree: files + symbols' })
+map('n', '<leader>ns', kitty_neotree.launch, { desc = 'neo-tree: files + symbols' })
 
 -- copy the current buffer's file path to the clipboard
 map('n', '<leader>yf', function()
