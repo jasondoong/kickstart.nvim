@@ -179,26 +179,14 @@ local function neotree_files_and_symbols()
 
   local function open_symbols()
     vim.cmd('wincmd s')
-    vim.cmd('Neotree document_symbols reveal bottom')
+    vim.cmd('sleep 10m')
+    vim.cmd('Neotree document_symbols reveal current')
     vim.cmd('wincmd p')
   end
 
-  local function has_lsp()
-    local clients = vim.lsp.buf_get_clients(0)
-    return clients and next(clients)
-  end
-
-  if has_lsp() then
+  vim.defer_fn(function()
     open_symbols()
-  else
-    vim.defer_fn(function()
-      if has_lsp() then
-        open_symbols()
-      else
-        vim.notify('No active LSP attached. Document symbols unavailable', vim.log.levels.WARN)
-      end
-    end, 100)
-  end
+  end, 100)
 end
 
 map('n', '<leader>ns', neotree_files_and_symbols, { desc = 'neo-tree: files + symbols' })
