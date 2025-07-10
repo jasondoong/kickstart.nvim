@@ -186,12 +186,6 @@ end
 
 map('n', '<leader>ns', neotree_files_and_symbols, { desc = 'neo-tree: files + symbols' })
 
--- Open the split Neo-tree sidebar automatically when starting Neovim
-vim.api.nvim_create_autocmd('VimEnter', {
-  callback = neotree_files_and_symbols,
-  once = true,
-})
-
 -- copy the current buffer's file path to the clipboard
 map('n', '<leader>yf', function()
   -- Use the path relative to the current working directory instead of the
