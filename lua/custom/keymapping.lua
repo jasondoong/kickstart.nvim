@@ -182,4 +182,9 @@ map('n', '<leader>yf', function()
   vim.fn.setreg('+', path)
   vim.notify('Copied path: ' .. path)
 end, { desc = '[Y]ank current [F]ile path' })
-map('n', '<leader>an', ':AerialNavToggle<CR>', { desc = 'toggle Aerial navigation' })
+map('n', '<leader>ds', ':AerialNavToggle<CR>', { desc = 'toggle Aerial navigation' })
+
+map('n', '<leader>e', function()
+  require('mini.files').open(vim.api.nvim_buf_get_name(0), true)
+end, { desc = 'Open MiniFiles (current file dir)' })
+
