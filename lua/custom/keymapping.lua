@@ -1,5 +1,10 @@
 local map = vim.keymap.set
 
+-- Window management
+map('n', '<leader>wn', ':new<CR>', { desc = '[W]indow [N]ew' })
+map('n', '<leader>wc', ':close<CR>', { desc = '[W]indow [C]lose' })
+map('n', '<leader>wt', ':tabnew<CR>', { desc = '[W]indow [T]ab' })
+
 -------------------------------------------------------------------------------
 -- Pytest integration
 -------------------------------------------------------------------------------
