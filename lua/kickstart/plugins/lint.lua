@@ -7,6 +7,7 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        python = {'codespell'},
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
@@ -55,6 +56,21 @@ return {
           end
         end,
       })
+    end,
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    event = "VeryLazy",
+    dependencies = { "davidmh/cspell.nvim" },
+    opts = function(_, opts)
+      local cspell = require("cspell")
+      opts.sources = opts.sources or {}
+      table.insert(opts.sources, cspell.diagnostics.with({
+        diagnostics_postprocess = function(diagnostic)
+          diagnostic.severity = vim.diagnostic.severity.HINT
+        end,
+      }))
+      table.insert(opts.sources, cspell.code_actions)
     end,
   },
 }
